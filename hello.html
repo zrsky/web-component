@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <template id="hello-world">
+	    <style type="text/css">
+		    h1 {
+		        color: red;
+		    }
+	    </style>
+        <h1 class="title">这是我自定义的标签</h1>
+    </template>
+</body>
+
+</html>
+<script type="text/javascript">
+var indexDoc = document; //文档对象模型 最外层的document
+var helloDoc = indexDoc.currentScript.ownerDocument; //当前文档对象模型
+var template = helloDoc.getElementById("hello-world");
+console.log(template.content)
+    //自定义标签
+HelloProto = Object.create(HTMLElement.prototype);
+// console.log(HelloProto instanceof Object)
+// 生命周期
+HelloProto.createdCallback = function() {
+        //影子dom Shadow DOM的引入就是为了解决封装机制作用域的问题。
+        var root = this.createShadowRoot();
+        root.appendChild(indexDoc.importNode(template.content, true))
+    }
+    //注册新元素
+var Hello = indexDoc.registerElement("hello-world", {
+    prototype: HelloProto
+})
+</script>
